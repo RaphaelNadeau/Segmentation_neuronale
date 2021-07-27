@@ -7,55 +7,25 @@ import time
 src = r"C:\Users\raper\Desktop\Temp"  # path source pour accèder aux données
 
 
-# finalImages = []
-# combinedImages = []
-# compteur = 1
-# begin = time.time()
-# # une boucle qui traverse les différents fichiers et dossiers à partir de la source
-# for root, dirnames, filenames in os.walk(src):
-#     # print(root, dirnames, filenames)
-#     images = []
-#     if dirnames == []:
-#         for file in filenames:  # traverse dans tous les fichiers qui sont présent dans un dossier
-#             if file.endswith("tif"):
-#                 fullname = os.path.join(root, file)
-#                 # print(fullname)
-#                 images.append(tifffile.imread(fullname))
-#                   # fait la moyenne de toutes les images dans le dossier, on obtient alors l'image d'intensité moyenne pour la channel en question
-#                 image = np.mean(images, 0)
-#         plt.imshow(image, cmap='gray')
-#         plt.show()
-#         #tifffile.imsave(src + "\\" + f"image{compteur}.tif", image)
-#         finalImages.append(image)
-#
-#         if compteur % 2 == 0:  # la prochaine portion combine l'image de la channel 1 et l'image de la channel 2 pour avoir l'image ratiométrique
-#             combined_image = np.add(finalImages[compteur - 2], finalImages[compteur - 1])
-#             # print(combined_image.shape)
-#             # plt.imshow(combined_image, cmap='gray')
-#             # plt.show()
-#             combinedImages.append(combined_image)
-#             #tifffile.imsave(src + "\\" + f"combined_image_{compteur - 1}+{compteur}.tif", combined_image)
-#
-#         compteur += 1
-#         if compteur > 4:
-#             break
-#
-# end = time.time()
-# print(end - begin)
-# print(finalImages[0])
-# print(finalImages[1])
-# print(finalImages[0] == combinedImages[0])
-# print(len(finalImages))
-# print(len(combinedImages))
-# print(len(finalImages) / 2 == len(combinedImages))
-
-def extraction_image(source_file, saving_file, ratiometrique=True, save=True):
+def extraction_image(source_file, saving_file=None, ratiometrique=True, save=True):
+    """
+    :param source_file: Le directory source dans lequel sont les images à récupérer
+    :type source_file: str
+    :param saving_file: Le directory dans lequel les images seront sauvegardées
+    :type saving_file: str
+    :param ratiometrique: Détermine si les images à récupérer sont de nature ratiométrique ou non
+    :type ratiometrique: bool
+    :param save: Détermine si l'on veut sauvegarder les images ou seulement extraire les images pour les manipulés
+    :type save: bool
+    :return: un tuple avec une liste contenant toutes les images individuelle et une liste avec toutes les images ratiométriques
+    :rtype: tuple
+    """
     finalimages = []
     combinedimages = []
     compteur = 1
     for root, dirnames, filenames in os.walk(source_file):
         images = []
-        if not dirnames:
+        if dirnames == []:
             for file in filenames:
                 if file.endswith("tif"):
                     fullname = os.path.join(root, file)
@@ -65,12 +35,24 @@ def extraction_image(source_file, saving_file, ratiometrique=True, save=True):
             plt.show()
             finalimages.append(image)
             if save:
-                tifffile.imsave(src + "\\" + f"image{compteur}.tif", image)
+                channel1 = saving_file + "\\" + "Channel_1"
+                channel2 = saving_file + "\\" + "Channel_2"
+                if not os.path.exists(channel1):
+                    os.makedirs(channel1)
+                if not os.path.exists(channel2):
+                    os.makedirs(channel2)
+                if compteur % 2 == 1:
+                    tifffile.imsave(channel1 + "\\" + f"image{compteur}.tif", image)
+                elif compteur % 2 == 0:
+                    tifffile.imsave(channel2 + "\\" + f"image{compteur}.tif", image)
             if ratiometrique:
                 if compteur % 2 == 0:
                     combined_image = np.add(finalImages[compteur - 2], finalImages[compteur - 1])
                     combinedimages.append(combined_image)
                     if save:
-                        tifffile.imsave(src + "\\" + f"combined_image_{compteur - 1}+{compteur}.tif", combined_image)
+                        ratio = saving_file + "\\" + "Ratiométrique"
+                        if not os.path.exists(ratio):
+                            os.makedirs(ratio)
+                        tifffile.imsave(ratio + "\\" + f"combined_image_{compteur - 1}+{compteur}.tif", combined_image)
             compteur += 1
     return finalimages, combinedimages

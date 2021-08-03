@@ -27,12 +27,15 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
         images = []
         if dirnames == []:
             for file in filenames:
+                if "Channel_1" in file or "Channel_2" in file or "Ratiométrique" in file:
+                    continue
                 if file.endswith("tif"):
                     fullname = os.path.join(root, file)
                     images.append(tifffile.imread(fullname))
-                    image = np.mean(images, 0)
-            plt.imshow(image, cmap='gray')
-            plt.show()
+                    image = np.sum(images, 0)
+                    # image = np.mean(images, 0)
+            # plt.imshow(image, cmap='gray')
+            # plt.show()
             finalimages.append(image)
             if save:
                 channel1 = saving_file + "\\" + "Channel_1"
@@ -47,8 +50,10 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                     tifffile.imsave(channel2 + "\\" + f"image{compteur}.tif", image)
             if ratiometrique:
                 if compteur % 2 == 0:
-                    combined_image = np.add(finalImages[compteur - 2], finalImages[compteur - 1])
+                    combined_image = np.add(finalimages[compteur - 2], finalimages[compteur - 1])
                     combinedimages.append(combined_image)
+                    # plt.imshow(combined_image, cmap='gray')
+                    # plt.show()
                     if save:
                         ratio = saving_file + "\\" + "Ratiométrique"
                         if not os.path.exists(ratio):
@@ -56,3 +61,6 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                         tifffile.imsave(ratio + "\\" + f"combined_image_{compteur - 1}+{compteur}.tif", combined_image)
             compteur += 1
     return finalimages, combinedimages
+
+
+# extraction_image(src, save=False)

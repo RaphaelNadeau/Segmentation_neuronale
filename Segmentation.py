@@ -40,7 +40,19 @@ def kmeans_segmentation(source, nb_cluster):
 
 
 def recreate_image(codebook, labels, height, width):
-    """Recreate the (compressed) image from the code book & labels"""
+    """
+    Permet de reconstituer l'image ségmentée avec le KMeans avec les couleurs associées aux bonnes étiquettes
+    :param codebook: Les valeurs moyennes des groupes formés par la segmentation par Kmeans
+    :type codebook: ndarray
+    :param labels: Les étiquettes provennant de la ségmentation par Kmeans.
+    :type labels: ndarray
+    :param height: La hauteur de l'image
+    :type height: int
+    :param width: La largeur de l'image
+    :type width: int
+    :return: L'image reconstituée avec les résultats de la segmentation
+    :rtype: ndarray
+    """
     d = codebook.shape[1]
     image = np.zeros((height, width, d))
     label_idx = 0

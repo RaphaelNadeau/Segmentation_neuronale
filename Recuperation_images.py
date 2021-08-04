@@ -27,6 +27,7 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
         images = []
         if dirnames == []:
             for file in filenames:
+                image = None
                 if "Channel_1" in file or "Channel_2" in file or "Ratiométrique" in file:
                     continue
                 if file.endswith("tif"):
@@ -36,7 +37,8 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                     # image = np.mean(images, 0)
             # plt.imshow(image, cmap='gray')
             # plt.show()
-            finalimages.append(image)
+            if image != None:
+                finalimages.append(image)
             if save:
                 channel1 = saving_file + "\\" + "Channel_1"
                 channel2 = saving_file + "\\" + "Channel_2"
@@ -45,9 +47,9 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                 if not os.path.exists(channel2):
                     os.makedirs(channel2)
                 if compteur % 2 == 1:
-                    tifffile.imsave(channel1 + "\\" + f"image{compteur}.tif", image)
+                    plt.imsave(channel1 + "\\" + f"image{compteur}.png", image, cmap='gray')
                 elif compteur % 2 == 0:
-                    tifffile.imsave(channel2 + "\\" + f"image{compteur}.tif", image)
+                    plt.imsave(channel2 + "\\" + f"image{compteur}.png", image, cmap='gray')
             if ratiometrique:
                 if compteur % 2 == 0:
                     combined_image = np.add(finalimages[compteur - 2], finalimages[compteur - 1])
@@ -58,9 +60,9 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                         ratio = saving_file + "\\" + "Ratiométrique"
                         if not os.path.exists(ratio):
                             os.makedirs(ratio)
-                        tifffile.imsave(ratio + "\\" + f"combined_image_{compteur - 1}+{compteur}.tif", combined_image)
+                        plt.imsave(ratio + "\\" + f"combined_image_{compteur - 1}+{compteur}.png", combined_image, cmap='gray')
             compteur += 1
     return finalimages, combinedimages
 
 
-# extraction_image(src, save=False)
+extraction_image(src, src)

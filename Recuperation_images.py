@@ -25,10 +25,10 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
     compteur = 1
     for root, dirnames, filenames in os.walk(source_file):
         images = []
-        if dirnames == []:
+        if "Channel_1" in root or "Channel_2" in root or "Ratiométrique" in root:
+            continue
+        elif dirnames == []:
             for file in filenames:
-                if "Channel_1" in file or "Channel_2" in file or "Ratiométrique" in file:
-                    continue
                 if file.endswith("tif"):
                     fullname = os.path.join(root, file)
                     images.append(tifffile.imread(fullname))

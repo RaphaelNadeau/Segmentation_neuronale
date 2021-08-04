@@ -10,7 +10,7 @@ from os import listdir
 from os.path import join
 
 n = 10
-src = r"C:\Users\raper\Desktop\Temp\ratiometrique"
+src = r"C:\Users\raper\Desktop\Temp\Ratiométrique"
 
 
 # src1 = r"C:\Users\raper\Desktop\Temp\ratiometrique\combined_image_1+2(contrast).jpg"

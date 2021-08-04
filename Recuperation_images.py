@@ -27,7 +27,6 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
         images = []
         if dirnames == []:
             for file in filenames:
-                image = None
                 if "Channel_1" in file or "Channel_2" in file or "Ratiométrique" in file:
                     continue
                 if file.endswith("tif"):
@@ -37,8 +36,7 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                     # image = np.mean(images, 0)
             # plt.imshow(image, cmap='gray')
             # plt.show()
-            if image != None:
-                finalimages.append(image)
+            finalimages.append(image)
             if save:
                 channel1 = saving_file + "\\" + "Channel_1"
                 channel2 = saving_file + "\\" + "Channel_2"

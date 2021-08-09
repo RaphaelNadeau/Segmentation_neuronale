@@ -3,17 +3,12 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 from skimage import img_as_ubyte
-from time import time
-import cv2 as cv
 from scipy import ndimage as nd
 from os import listdir
 from os.path import join
 
 n = 10
 src = r"C:\Users\raper\Desktop\Temp\Ratiométrique"
-
-
-# src1 = r"C:\Users\raper\Desktop\Temp\ratiometrique\combined_image_1+2(contrast).jpg"
 
 
 def kmeans_segmentation(source, nb_cluster):
@@ -28,8 +23,9 @@ def kmeans_segmentation(source, nb_cluster):
     et la largeur de l'image
     :rtype: tuple avec à l'intérieur (ndarray, ndarray, int, int)
     """
-    img = cv.imread(source)
-    image = np.array(img, dtype=np.float64) / 255
+    img = plt.imread(source)[:, :, :-1]
+    print(source)
+    image = np.array(img, dtype=np.float64)
     h, w, d = tuple(image.shape)  # La taille originale de l'image
     assert d == 3
     image_array = np.reshape(image, (w * h, d))
@@ -96,6 +92,8 @@ def binary(codebook, labels, height, width, denoising=True):
         return binaire
 
 
+
+
 list_of_files = listdir(src)
 for file in list_of_files:
     if file.endswith(".png"):
@@ -107,12 +105,12 @@ for file in list_of_files:
             file_split = file.split(".")
             kmean = kmeans_segmentation(filename, n)  # Ségmentation de l'image en cours
             segmented_image = recreate_image(kmean[0], kmean[1], kmean[2], kmean[3])  # Recréation de l'image ségmentée
-            plt.imsave(src + "\\" + file_split[0] + "_segmented.png", segmented_image)
-            binaire = binary(kmean[0], kmean[1], kmean[2], kmean[3])  # Création d'un masque binaire associé à l'image
-            plt.imsave(src + "\\" + file_split[0] + "_binary_mask.png", binaire, cmap='gray')
+            #plt.imsave(src + "\\" + file_split[0] + "_segmented.png", segmented_image)
+            binaire = binary(kmean[0], kmean[1], kmean[2], kmean[3], denoising=True)  # Création d'un masque binaire associé à l'image
+            #plt.imsave(src + "\\" + file_split[0] + "_binary_mask.png", binaire, cmap='gray')
             ## Décomenter si l'on veut voir le mask binaire pendant le traitement des images
-            # plt.imshow(binaire, cmap='gray')
-            # plt.axis("off")
-            # plt.show()
+            plt.imshow(binaire, cmap='gray')
+            plt.axis("off")
+            plt.show()
     else:
         continue

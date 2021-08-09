@@ -45,9 +45,9 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                 if not os.path.exists(channel2):
                     os.makedirs(channel2)
                 if compteur % 2 == 1:
-                    plt.imsave(channel1 + "\\" + f"image{compteur}.png", image, cmap='gray')
+                    plt.imsave(channel1 + "\\" + f"image_{compteur}.png", image, cmap='gray')
                 elif compteur % 2 == 0:
-                    plt.imsave(channel2 + "\\" + f"image{compteur}.png", image, cmap='gray')
+                    plt.imsave(channel2 + "\\" + f"image_{compteur}.png", image, cmap='gray')
             if ratiometrique:
                 if compteur % 2 == 0:
                     combined_image = np.add(finalimages[compteur - 2], finalimages[compteur - 1])
@@ -58,7 +58,8 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                         ratio = saving_file + "\\" + "Ratiométrique"
                         if not os.path.exists(ratio):
                             os.makedirs(ratio)
-                        plt.imsave(ratio + "\\" + f"combined_image_{compteur - 1}+{compteur}.png", combined_image, cmap='gray')
+                        plt.imsave(ratio + "\\" + f"combined_image_{compteur - 1}+{compteur}.png", combined_image,
+                                   cmap='gray')
             compteur += 1
     return finalimages, combinedimages
 

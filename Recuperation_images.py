@@ -2,9 +2,9 @@ import os
 import numpy as np
 import tifffile
 import matplotlib.pyplot as plt
-import time
+from time import time
 
-src = r"C:\Users\raper\Desktop\Temp"  # path source pour accèder aux données
+src = r"C:\Users\raper\Desktop\Temp_2"  # path source pour accèder aux données
 
 
 def extraction_image(source_file, saving_file=None, ratiometrique=True, save=True):

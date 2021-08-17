@@ -2,20 +2,20 @@ import os
 import numpy as np
 import tifffile
 import matplotlib.pyplot as plt
-from time import time
+
 
 src = r"C:\Users\raper\Desktop\Temp_2"  # path source pour accèder aux données
 
 
-def extraction_image(source_file, saving_file=None, ratiometrique=True, save=True):
+def extraction_image(source_file, saving_file=None, ratiometrique=True, save=False):
     """
     :param source_file: Le directory source dans lequel sont les images à récupérer
     :type source_file: str
-    :param saving_file: Le directory dans lequel les images seront sauvegardées
+    :param saving_file: Le directory dans lequel les images seront sauvegardées, None par défaut si l'on ne veut pas sauvegarder
     :type saving_file: str
     :param ratiometrique: Détermine si les images à récupérer sont de nature ratiométrique ou non
     :type ratiometrique: bool
-    :param save: Détermine si l'on veut sauvegarder les images ou seulement extraire les images pour les manipulés
+    :param save: Détermine si l'on veut sauvegarder les images ou seulement extraire les images pour les manipulés, False par défaut
     :type save: bool
     :return: un tuple avec une liste contenant toutes les images individuelle et une liste avec toutes les images ratiométriques
     :rtype: tuple
@@ -27,15 +27,12 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
         images = []
         if "Channel_1" in root or "Channel_2" in root or "Ratiométrique" in root:
             continue
-        elif dirnames == []:
+        elif not dirnames:
             for file in filenames:
                 if file.endswith("tif"):
                     fullname = os.path.join(root, file)
                     images.append(tifffile.imread(fullname))
                     image = np.sum(images, 0)
-                    # image = np.mean(images, 0)
-            # plt.imshow(image, cmap='gray')
-            # plt.show()
             finalimages.append(image)
             if save:
                 channel1 = saving_file + "\\" + "Channel_1"
@@ -52,8 +49,6 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
                 if compteur % 2 == 0:
                     combined_image = np.add(finalimages[compteur - 2], finalimages[compteur - 1])
                     combinedimages.append(combined_image)
-                    # plt.imshow(combined_image, cmap='gray')
-                    # plt.show()
                     if save:
                         ratio = saving_file + "\\" + "Ratiométrique"
                         if not os.path.exists(ratio):
@@ -64,4 +59,4 @@ def extraction_image(source_file, saving_file=None, ratiometrique=True, save=Tru
     return finalimages, combinedimages
 
 
-extraction_image(src, src)
+extraction_image(src, src, save=True)

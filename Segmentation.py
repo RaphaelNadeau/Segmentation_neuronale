@@ -8,8 +8,8 @@ from os import listdir
 from os.path import join
 from time import time
 
-n = 15
-src = r"C:\Users\raper\Desktop\Temp_2\Ratiométrique"
+n = 15  # Le nombre de morceaux demandés pour la segmentation
+src = r"C:\Users\raper\Desktop\Temp_2\Ratiométrique"  # path source pour accèder aux données
 
 
 def kmeans_segmentation(source, nb_cluster):
@@ -39,7 +39,7 @@ def kmeans_segmentation(source, nb_cluster):
 
 def recreate_image(codebook, labels, height, width):
     """
-    Permet de reconstituer l'image segmentée avec le KMeans avec les couleurs associées aux bonnes étiquettes
+    Permet de reconstituer l'image segmentée avec le KMeans avec les couleurs associées aux bonnes étiquettes.
     :param codebook: Les valeurs moyennes des groupes formés par la segmentation par Kmeans
     :type codebook: ndarray
     :param labels: Les étiquettes provennant de la segmentation par Kmeans.
@@ -61,9 +61,10 @@ def recreate_image(codebook, labels, height, width):
     return image
 
 
-## Make a binary mask of the image ##
+
 def binary(codebook, labels, height, width, n, denoising=True):
     """
+    Crée un masque binaire de l'image donnée en input.
     :param codebook: Les valeurs moyennes des groupes formés par la segmentation par Kmeans
     :type codebook: ndarray
     :param labels: Les étiquettes provennant de la segmentation par Kmeans.
@@ -80,7 +81,7 @@ def binary(codebook, labels, height, width, n, denoising=True):
     gray_value_ubyte = img_as_ubyte(codebook)
     gray_sorted = np.argsort(gray_value_ubyte, axis=0)
     binaire = np.zeros(524288)
-    for i in range(0, 524288, 1):  # 524288, 1000
+    for i in range(0, 524288, 1):
         if labels[i] in gray_sorted[-(int(n/2)):, 0]:
             binaire[i] = True
         else:
@@ -124,12 +125,5 @@ for file in list_of_files:
         continue
 
 print("Le temps moyen de segmentation d'une image est de {}s.".format(np.mean(time_stamp)))
-# n = [10, 15, 20, 25]
-#
-# for i in n:
-#     kmean = kmeans_segmentation(src, i)
-#     segmented_image = recreate_image(kmean[0], kmean[1], kmean[2], kmean[3])
-#     binaire = binary(kmean[0], kmean[1], kmean[2], kmean[3], i, denoising=True)
-#     savefile = r"C:\Users\raper\Desktop\Temp" + "\\" + "Test" + "\\" + "test_n={}_2.png".format(i)
-#     plt.imsave(savefile, binaire, cmap='gray')
+
 

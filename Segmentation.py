@@ -10,7 +10,7 @@ from time import time
 
 n = 15  # Le nombre de morceaux demandés pour la segmentation
 src = r"C:\Users\raper\Desktop\Temp_2\Ratiométrique"  # path source pour accèder aux données
-
+#src_2 = r"C:\Users\raper\Desktop\Temp_2\Ratiométrique\combined_image_3+4.png"
 
 def kmeans_segmentation(source, nb_cluster):
     """
@@ -34,7 +34,7 @@ def kmeans_segmentation(source, nb_cluster):
     image_array_sample = shuffle(image_array, random_state=0)[:1000]  # Prend une portion de l'image de façon aléatoire fixée qui servira à l'entrainement
     kmeans = KMeans(init="k-means++", n_clusters=nb_cluster, random_state=0).fit(image_array_sample)
     labels = kmeans.predict(image_array)
-    return kmeans.cluster_centers_, labels, h, w
+    return kmeans.cluster_centers_, labels, h, w, kmeans.inertia_
 
 
 def recreate_image(codebook, labels, height, width):
@@ -109,10 +109,10 @@ for file in list_of_files:
             kmean = kmeans_segmentation(filename, n)  # Segmentation de l'image en cours
             segmented_image = recreate_image(kmean[0], kmean[1], kmean[2], kmean[3])  # Recréation de l'image segmentée
             try:
-                plt.imsave(src + "\\" + file_split[0] + "_segmented.png", segmented_image)
+                # plt.imsave(src + "\\" + file_split[0] + "_segmented.png", segmented_image)
                 binaire = binary(kmean[0], kmean[1], kmean[2], kmean[3], n,
                                  denoising=True)  # Création d'un masque binaire associé à l'image
-                plt.imsave(src + "\\" + file_split[0] + "_binary_mask.png", binaire, cmap='gray')
+                # plt.imsave(src + "\\" + file_split[0] + "_binary_mask.png", binaire, cmap='gray')
                 time_stamp.append(time()-t0)
             except ValueError:
                 print("L'image {} n'est pas adéquate et peut causer des problèmes aux cours du code".format(filename))
@@ -125,5 +125,6 @@ for file in list_of_files:
         continue
 
 print("Le temps moyen de segmentation d'une image est de {}s.".format(np.mean(time_stamp)))
+
 
 
